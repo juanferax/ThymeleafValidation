@@ -16,11 +16,11 @@
 <link rel="stylesheet" href="../css/shards.min.css">
 </head>
 <body>
-	<div  class="container my-5">
+	<div th:switch="${users}" class="container my-5">
 		<div class="row">
 			<div class="col-md-10">
-				<div >
-					
+				<h2 th:case="null">No users yet!</h2>
+				<div th:case="*">
 					<h2 class="my-5">Users</h2>
 					<table class="table table-striped table-responsive-md">
 						<thead>
@@ -34,31 +34,28 @@
 								<th>Delete</th>
 							</tr>
 						</thead>
-						<!-- List Users -->
-						<div th:each="currentUser : ${users}" class="card">
-							<tr>
-								<td th:text="${currentUser.name}" />
-								<td th:text="${currentUser.email}" />
-								<td th:text="${currentUser.type}" />
-								<td th:text="${currentUser.gender}" />
-								<td th:text="${currentUser.birthDate}" />
-								<td><a th:href="@{'/users/edit/' + ${currentUser.id}}" class="btn btn-primary"><i
-								class="fas fa-edit mr-1 ml-1"></i></a></td>
-								<td><a th:href="@{'/users/del/' + ${currentUser.id}}" class="btn btn-primary"><i
-								class="fas fa-user-minus mr-1 ml-1"></i></a></td>
-							</tr>
-						</div>
 						<tbody>
+							<tr th:each="user : ${users}">
+								<td class="text-info" th:text="${user.name}"></td>
+								<td class="text-info" th:text="${user.email}"></td>
+								<td class="text-info" th:text="${user.type}"></td>
+								<td class="text-info" th:text="${user.gender}"></td>
+								<td class="text-info" th:text="${user.birthDate}"></td>
+								<td><a th:href="@{/users/edit/{id}(id=${user.id})}"
+									class="btn btn-primary"><i class="fas fa-user-edit ml-2"></i></a></td>
+								<td><a th:href="@{/users/del/{id}(id=${user.id})}"
+									class="btn btn-primary"><i class="fas fa-user-times ml-2"></i></a></td>
+							</tr>
 						</tbody>
 					</table>
 				</div>
 				<p class="my-5">
 					<a href="/users/add" class="btn btn-primary"><i
-						class="fas fa-user-plus mr-1 ml-1"></i></a>
+						class="fas fa-user-plus ml-2"></i></a>
 				</p>
 				<p class="my-5">
 					<a href="/apps/add" class="btn btn-primary"><i
-						class="fas fa-calendar-plus mr-1 ml-1"></i></a>
+						class="fas fa-calendar-plus ml-2"></i></a>
 				</p>
 			</div>
 		</div>
