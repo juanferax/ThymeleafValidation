@@ -59,4 +59,8 @@ public class UserServiceImpl implements UserService{
 		// TODO Auto-generated method stub
 		return UserType.values();
 	}
+
+	public boolean confirmPassword(Long id, String currentPassword) {
+		return userRepository.findById(id).get().getPassword().equals(currentPassword);
+	}
 }

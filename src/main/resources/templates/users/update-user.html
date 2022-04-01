@@ -20,6 +20,34 @@
 					th:action="@{/users/edit/{id}(id=${user.id})}" method="post">
 					<div class="row">
 						<div class="form-group col-md-6">
+							<label for="Id" class="col-form-label">Id</label> <input
+								type="text" th:field="*{id}" class="form-control" id="id"
+								placeholder="Id" disabled> <span
+								th:if="${#fields.hasErrors('id')}" th:errors="*{id}"
+								class="text-danger"></span>
+						</div>
+						<div class="form-group col-md-6">
+							<label for="username" class="col-form-label">Username</label> <input
+								type="text" th:field="*{username}" class="form-control" id="username"
+								placeholder="Username"> <span
+								th:if="${#fields.hasErrors('username')}" th:errors="*{username}"
+								class="text-danger"></span>
+						</div>
+						<div class="form-group col-md-6">
+							<label for="password" class="col-form-label">Current password</label> <input
+								th:name="currentPassword" type="password" th:value="${currentPassword}" class="form-control" id="curentPassword"
+								placeholder="Current password"> <span
+								th:if="${match==false}"
+								class="text-danger">La contraseña no coincide</span>
+						</div>
+						<div class="form-group col-md-6">
+							<label for="newPassword" class="col-form-label">New password</label> <input
+								type="password" th:field="*{password}" class="form-control" id="newPassword"
+								placeholder="New password"> <span
+								th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
+								class="text-danger"></span>
+						</div>
+						<div class="form-group col-md-6">
 							<label for="name" class="col-form-label">Name</label> <input
 								type="text" th:field="*{name}" class="form-control" id="name"
 								placeholder="Name"> <span

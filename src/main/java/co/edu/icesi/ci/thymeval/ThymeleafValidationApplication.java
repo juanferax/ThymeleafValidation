@@ -26,6 +26,8 @@ public class ThymeleafValidationApplication {
 		
 		UserServiceImpl u = c.getBean(UserServiceImpl.class);
 		User user1 = new User();
+		user1.setUsername("Juanfer");
+		user1.setPassword("admin123");
 		user1.setName("Juan");
 		user1.setEmail("jc@gmail.com");
 		user1.setType(UserType.doctor);
@@ -33,6 +35,8 @@ public class ThymeleafValidationApplication {
 		user1.setBirthDate(LocalDate.now().minusMonths(1));
 		u.save(user1);
 		User user2 = new User();
+		user2.setUsername("Anita");
+		user2.setPassword("anita");
 		user2.setName("Ana");
 		user2.setEmail("ana@gmail.com");
 		user2.setType(UserType.patient);

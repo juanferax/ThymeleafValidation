@@ -2,6 +2,8 @@ package co.edu.icesi.ci.thymeval.controller.implementation;
 
 import java.util.Optional;
 
+import javax.validation.groups.Default;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,8 +18,10 @@ import org.springframework.web.bind.annotation.RequestParam;
 import co.edu.icesi.ci.thymeval.controller.interfaces.UserController;
 import co.edu.icesi.ci.thymeval.model.User;
 import co.edu.icesi.ci.thymeval.service.UserServiceImpl;
+import lombok.extern.log4j.Log4j2;
 
 @Controller
+@Log4j2
 public class UserControllerImpl implements UserController {
 
 	UserServiceImpl userService;
@@ -65,8 +69,8 @@ public class UserControllerImpl implements UserController {
 	}
 	
 	@PostMapping("/users/add1")
-	public String saveUserStepTwo(@Validated({User.ValidationStepOne.class, User.ValidationStepTwo.class}) @ModelAttribute User user, BindingResult bindingResult, Model model,
-			@RequestParam(value = "action", required = true) String action) {
+	public String saveUserStepTwo(@Validated({User.ValidationStepTwo.class}) @ModelAttribute User user, BindingResult bindingResult,
+			Model model, @RequestParam(value = "action", required = true) String action) {
 		if (!action.equals("Cancel")) {
 			if (bindingResult.hasErrors()) {
 				model.addAttribute("user", user);
@@ -87,20 +91,41 @@ public class UserControllerImpl implements UserController {
 		model.addAttribute("user", user.get());
 		model.addAttribute("genders", userService.getGenders());
 		model.addAttribute("types", userService.getTypes());
+		model.addAttribute("currentPassword", "");
+		model.addAttribute("match", true);
 		return "users/update-user";
 	}
 
 	@PostMapping("/users/edit/{id}")
 	public String updateUser(@PathVariable("id") long id,
-			@RequestParam(value = "action", required = true) String action, @Validated @ModelAttribute User user, BindingResult bindingResult, Model model) {
+			@RequestParam(value = "action", required = true) String action, @Validated(User.ValidationEdit.class) @ModelAttribute User user,
+			BindingResult bindingResult, @ModelAttribute("currentPassword") String currentPassword, Model model) {
 		if (action != null && !action.equals("Cancel")) {
+			log.info("The password is: " + currentPassword);
 			if (bindingResult.hasErrors()) {
+				user.setPassword("");
 				model.addAttribute("user", user);
 				model.addAttribute("genders", userService.getGenders());
 				model.addAttribute("types", userService.getTypes());
+				model.addAttribute("match", true);
 				return "users/update-user";
 			}
-			userService.save(user);
+			if (user.getPassword().equals("") && currentPassword.equals("")) {
+				userService.save(user);
+				return "redirect:/users/";
+			}
+			if (userService.confirmPassword(user.getId(), currentPassword)) {
+				userService.save(user);
+			} else {
+				log.info("Password do not match");
+				user.setPassword("");
+				model.addAttribute("user", user);
+				model.addAttribute("genders", userService.getGenders());
+				model.addAttribute("types", userService.getTypes());
+				model.addAttribute("match", false);
+				return "users/update-user";
+			}
+			
 			model.addAttribute("users", userService.findAll());
 		}
 		return "redirect:/users/";
