@@ -38,14 +38,14 @@
 								th:name="currentPassword" type="password" th:value="${currentPassword}" class="form-control" id="curentPassword"
 								placeholder="Current password"> <span
 								th:if="${match==false}"
-								class="text-danger">La contraseña no coincide</span>
+								class="text-danger">Password do not match</span>
 						</div>
 						<div class="form-group col-md-6">
 							<label for="newPassword" class="col-form-label">New password</label> <input
 								type="password" th:field="*{password}" class="form-control" id="newPassword"
 								placeholder="New password"> <span
-								th:if="${#fields.hasErrors('password')}" th:errors="*{password}"
-								class="text-danger"></span>
+								th:if="${blank==true}"
+								class="text-danger">New password cannot be blank</span>
 						</div>
 						<div class="form-group col-md-6">
 							<label for="name" class="col-form-label">Name</label> <input

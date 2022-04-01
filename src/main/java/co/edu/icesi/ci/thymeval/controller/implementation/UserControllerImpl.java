@@ -93,6 +93,7 @@ public class UserControllerImpl implements UserController {
 		model.addAttribute("types", userService.getTypes());
 		model.addAttribute("currentPassword", "");
 		model.addAttribute("match", true);
+		model.addAttribute("blank", false);
 		return "users/update-user";
 	}
 
@@ -101,28 +102,40 @@ public class UserControllerImpl implements UserController {
 			@RequestParam(value = "action", required = true) String action, @Validated(User.ValidationEdit.class) @ModelAttribute User user,
 			BindingResult bindingResult, @ModelAttribute("currentPassword") String currentPassword, Model model) {
 		if (action != null && !action.equals("Cancel")) {
-			log.info("The password is: " + currentPassword);
+			//log.info("The password is: " + currentPassword);
 			if (bindingResult.hasErrors()) {
-				user.setPassword("");
 				model.addAttribute("user", user);
 				model.addAttribute("genders", userService.getGenders());
 				model.addAttribute("types", userService.getTypes());
+				model.addAttribute("currentPassword", "");
 				model.addAttribute("match", true);
+				model.addAttribute("blank", false);
 				return "users/update-user";
 			}
 			if (user.getPassword().equals("") && currentPassword.equals("")) {
+				user.setPassword(userService.findById(user.getId()).get().getPassword());
 				userService.save(user);
 				return "redirect:/users/";
 			}
 			if (userService.confirmPassword(user.getId(), currentPassword)) {
+				if (user.getPassword() == "") {
+					model.addAttribute("user", user);
+					model.addAttribute("genders", userService.getGenders());
+					model.addAttribute("types", userService.getTypes());
+					model.addAttribute("currentPassword", "");
+					model.addAttribute("match", true);
+					model.addAttribute("blank", true);
+					return "users/update-user";
+				}
 				userService.save(user);
 			} else {
-				log.info("Password do not match");
-				user.setPassword("");
+				//log.info("Password do not match");
 				model.addAttribute("user", user);
 				model.addAttribute("genders", userService.getGenders());
 				model.addAttribute("types", userService.getTypes());
+				model.addAttribute("currentPassword", "");
 				model.addAttribute("match", false);
+				model.addAttribute("blank", false);
 				return "users/update-user";
 			}
 			
