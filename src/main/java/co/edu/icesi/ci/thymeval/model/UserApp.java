@@ -17,7 +17,7 @@ import lombok.Data;
 
 @Entity
 @Data
-public class User {
+public class UserApp {
 	
 	public interface ValidationStepOne {
         // validation group marker interface

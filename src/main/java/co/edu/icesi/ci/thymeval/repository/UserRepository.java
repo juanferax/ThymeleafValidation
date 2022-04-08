@@ -3,15 +3,16 @@ package co.edu.icesi.ci.thymeval.repository;
 import java.util.List;
 
 import org.springframework.data.repository.CrudRepository;
-import org.springframework.stereotype.Repository;
 
-import co.edu.icesi.ci.thymeval.model.User;
+import co.edu.icesi.ci.thymeval.model.UserApp;
 import co.edu.icesi.ci.thymeval.model.UserType;
 
-public interface UserRepository extends CrudRepository<User, Long> {
+public interface UserRepository extends CrudRepository<UserApp, Long> {
 
-	List<User> findByName(String name);
+	List<UserApp> findByName(String name);
 	
-	List<User> findByType(UserType patient);
+	List<UserApp> findByType(UserType patient);
+	
+	List<UserApp> findByUsername(String username);
 
 }

@@ -35,9 +35,9 @@ public class Appointment {
 	
 	@ManyToOne
 	@NotNull(message="Patient cannot be blank")
-	private User patient;
+	private UserApp patient;
 	
 	@ManyToOne
 	@NotNull(message="Doctor cannot be blank")
-	private User doctor;
+	private UserApp doctor;
 }

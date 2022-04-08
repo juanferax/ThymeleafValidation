@@ -2,8 +2,6 @@ package co.edu.icesi.ci.thymeval.controller.implementation;
 
 import java.util.Optional;
 
-import javax.validation.groups.Default;
-
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
@@ -16,12 +14,11 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
 import co.edu.icesi.ci.thymeval.controller.interfaces.UserController;
-import co.edu.icesi.ci.thymeval.model.User;
+import co.edu.icesi.ci.thymeval.model.UserApp;
 import co.edu.icesi.ci.thymeval.service.UserServiceImpl;
-import lombok.extern.log4j.Log4j2;
 
 @Controller
-@Log4j2
+//@Log4j2
 public class UserControllerImpl implements UserController {
 
 	UserServiceImpl userService;
@@ -33,13 +30,13 @@ public class UserControllerImpl implements UserController {
 
 	@GetMapping("/users/add")
 	public String addUser(Model model) {
-		model.addAttribute("user", new User());
+		model.addAttribute("user", new UserApp());
 		return "users/add-user-1";
 	}
 
 	@GetMapping("/users/del/{id}")
 	public String deleteUser(@PathVariable("id") long id, Model model) {
-		User user = userService.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
+		UserApp user = userService.findById(id).orElseThrow(() -> new IllegalArgumentException("Invalid user Id:" + id));
 		userService.delete(user);
 		model.addAttribute("users", userService.findAll());
 		return "users/index";
@@ -52,7 +49,7 @@ public class UserControllerImpl implements UserController {
 	}
 
 	@PostMapping("/users/add")
-	public String saveUserStepOne(@Validated(User.ValidationStepOne.class) @ModelAttribute User user, BindingResult bindingResult, Model model,
+	public String saveUserStepOne(@Validated(UserApp.ValidationStepOne.class) @ModelAttribute UserApp user, BindingResult bindingResult, Model model,
 			@RequestParam(value = "action", required = true) String action) {
 
 		if (!action.equals("Cancel")) {
@@ -69,7 +66,7 @@ public class UserControllerImpl implements UserController {
 	}
 	
 	@PostMapping("/users/add1")
-	public String saveUserStepTwo(@Validated({User.ValidationStepTwo.class}) @ModelAttribute User user, BindingResult bindingResult,
+	public String saveUserStepTwo(@Validated({UserApp.ValidationStepTwo.class}) @ModelAttribute UserApp user, BindingResult bindingResult,
 			Model model, @RequestParam(value = "action", required = true) String action) {
 		if (!action.equals("Cancel")) {
 			if (bindingResult.hasErrors()) {
@@ -85,7 +82,7 @@ public class UserControllerImpl implements UserController {
 
 	@GetMapping("/users/edit/{id}")
 	public String showUpdateForm(@PathVariable("id") long id, Model model) {
-		Optional<User> user = userService.findById(id);
+		Optional<UserApp> user = userService.findById(id);
 		if (user == null)
 			throw new IllegalArgumentException("Invalid user Id:" + id);
 		model.addAttribute("user", user.get());
@@ -99,7 +96,7 @@ public class UserControllerImpl implements UserController {
 
 	@PostMapping("/users/edit/{id}")
 	public String updateUser(@PathVariable("id") long id,
-			@RequestParam(value = "action", required = true) String action, @Validated(User.ValidationEdit.class) @ModelAttribute User user,
+			@RequestParam(value = "action", required = true) String action, @Validated(UserApp.ValidationEdit.class) @ModelAttribute UserApp user,
 			BindingResult bindingResult, @ModelAttribute("currentPassword") String currentPassword, Model model) {
 		if (action != null && !action.equals("Cancel")) {
 			//log.info("The password is: " + currentPassword);
@@ -143,4 +140,11 @@ public class UserControllerImpl implements UserController {
 		}
 		return "redirect:/users/";
 	}
+	
+	@GetMapping("/login")
+	public String login(Model model) {
+		return "login";
+	}
+	
+
 }
